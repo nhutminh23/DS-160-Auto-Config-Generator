@@ -112,6 +112,21 @@ function escapeHtml(str) {
     return div.innerHTML;
 }
 
+function setCopyButtonState(button) {
+    button.textContent = t("copied");
+    button.classList.add("copied");
+    setTimeout(function () {
+        button.textContent = t("copy");
+        button.classList.remove("copied");
+    }, 2000);
+}
+
+function copyText(text, button) {
+    navigator.clipboard.writeText(text).then(function () {
+        setCopyButtonState(button);
+    });
+}
+
 function applyLanguage() {
     document.documentElement.lang = currentLang;
     subtitleText.textContent = t("subtitle");
@@ -160,7 +175,10 @@ function renderResults(data) {
             '<div class="accordion-header" data-idx="' + idx + '">' +
                 '<span class="accordion-arrow">&#9654;</span>' +
                 '<span class="accordion-title">' + escapeHtml(item.displayName) + '</span>' +
-                '<span style="color:var(--text-muted);font-size:0.8rem">' + escapeHtml(item.filename) + '</span>' +
+                '<div class="accordion-header-actions">' +
+                    '<span class="accordion-filename">' + escapeHtml(item.filename) + '</span>' +
+                    '<button class="accordion-copy-btn" type="button" data-copy-script="' + idx + '">' + t("copy") + '</button>' +
+                '</div>' +
             '</div>' +
             '<div class="accordion-body">' +
                 '<div class="accordion-content">' +
@@ -193,6 +211,16 @@ function renderResults(data) {
         });
     });
 
+    document.querySelectorAll(".accordion-copy-btn").forEach(function (btn) {
+        btn.addEventListener("click", function (event) {
+            event.stopPropagation();
+            var scriptIdx = Number(this.getAttribute("data-copy-script"));
+            var scriptItem = scripts[scriptIdx];
+            if (!scriptItem) return;
+            copyText(scriptItem.fullScript, this);
+        });
+    });
+
     document.querySelectorAll(".tab-btn").forEach(function (btn) {
         btn.addEventListener("click", function () {
             var targetId = this.getAttribute("data-tab");
@@ -212,16 +240,7 @@ function renderResults(data) {
             var codeId = this.getAttribute("data-copy");
             var codeEl = document.getElementById(codeId);
             var text = codeEl.textContent;
-            var button = this;
-
-            navigator.clipboard.writeText(text).then(function () {
-                button.textContent = t("copied");
-                button.classList.add("copied");
-                setTimeout(function () {
-                    button.textContent = t("copy");
-                    button.classList.remove("copied");
-                }, 2000);
-            });
+            copyText(text, this);
         });
     });
 

@@ -340,6 +340,46 @@ main {
     flex: 1;
 }
 
+.accordion-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+    min-width: 0;
+}
+
+.accordion-filename {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.accordion-copy-btn {
+    padding: 6px 14px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.accordion-copy-btn:hover {
+    background: var(--border);
+    color: var(--text-primary);
+}
+
+.accordion-copy-btn.copied {
+    background: var(--green-bg);
+    border-color: rgba(63, 185, 80, 0.3);
+    color: var(--green);
+}
+
 .accordion-body {
     max-height: 0;
     overflow: hidden;
@@ -477,6 +517,17 @@ main {
 
     .accordion-header {
         padding: 12px 16px;
+        flex-wrap: wrap;
+    }
+
+    .accordion-title {
+        min-width: 0;
+    }
+
+    .accordion-header-actions {
+        width: 100%;
+        justify-content: space-between;
+        padding-left: 22px;
     }
 
     .accordion-content {
